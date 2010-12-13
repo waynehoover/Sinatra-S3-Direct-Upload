@@ -1,0 +1,11 @@
+A simple Sinatra app to upload files directly to Amazon S3 using jQuery SWFUpload.  
+
+Tested on ruby 1.9.2. Install these gems if you haven't already:
+                                        
+gem install activesupport
+gem install hpricot 
+gem install sinatra         
+
+Make sure hpricot is at least at version 0.8.3
+
+To run just type ruby main.rb and go to http://localhost:4567/upload 
