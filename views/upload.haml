@@ -1,0 +1,78 @@
+:erb
+  <script>
+  $(function(){
+      $('#swfupload-control').swfupload({
+          // Backend Settings
+          upload_url: "<%= @upload_url %>",    // Relative to the SWF file (or you can use absolute paths)
+  			  http_success : [ 200, 201, 204 ], 		// FOR AWS
+      
+          // File Upload Settings
+          file_size_limit : "102400", // 100MB
+          file_types : "*.*",
+          file_types_description : "All Files",
+          file_upload_limit : "10",
+          file_queue_limit : "0",
+  			  file_post_name : "file", 				// FOR AWS
+  
+    			// Button settings
+    			button_image_url : "/images/XPButtonUploadText_61x22.png",
+    			button_placeholder_id : "spanButtonPlaceHolder",
+    			button_width: 61,
+    			button_height: 22,
+      
+          // Flash Settings
+          flash_url : "/assets/swfupload.swf",
+  			  debug: true,
+  			  post_params: <%= @post.to_json %>		// FOR AWS
+   
+      }) 
+          .bind('swfuploadLoaded', function(event){
+      			$('#log').append('<li>Loaded</li>');
+      		})
+      		.bind('fileQueued', function(event, file){
+      			$('#log').append('<li>File queued - '+file.name+'</li>');
+      			// start the upload since it's queued
+      			$(this).swfupload('startUpload');
+      		})
+      		.bind('fileQueueError', function(event, file, errorCode, message){
+      			$('#log').append('<li>File queue error - '+message+'</li>');
+      		})
+      		.bind('fileDialogStart', function(event){
+      			$('#log').append('<li>File dialog start</li>');
+      		})
+      		.bind('fileDialogComplete', function(event, numFilesSelected, numFilesQueued){
+      			$('#log').append('<li>File dialog complete</li>');
+      		})
+      		.bind('uploadStart', function(event, file){
+      			$('#log').append('<li>Upload start - '+file.name+'</li>');
+      		})
+      		.bind('uploadProgress', function(event, file, bytesLoaded){
+      			$('#log').append('<li>Upload progress - '+bytesLoaded+'</li>');
+      		})
+      		.bind('uploadSuccess', function(event, file, serverData){
+      			$('#log').append('<li>Upload success - '+file.name+'</li>');
+      		})
+      		.bind('uploadComplete', function(event, file){
+      			$('#log').append('<li>Upload complete - '+file.name+'</li>');
+      			 
+      			// Change this callback function to suite your needs
+      			 $.ajax({
+               type: "POST",
+               url: '/upload',
+               data: "name=" + file.name,
+               async: false,
+             });
+      			
+      			// upload has completed, lets try the next one in the queue
+      			$(this).swfupload('startUpload');
+      		})
+      		.bind('uploadError', function(event, file, errorCode, message){
+      			$('#log').append('<li>Upload error - '+message+'</li>');
+      		});
+      
+  });
+  </script> 
+
+%div{:id=> "swfupload-control"}
+  %ol{:id=> "log"}
+  %span{:id=> "spanButtonPlaceHolder"}  
