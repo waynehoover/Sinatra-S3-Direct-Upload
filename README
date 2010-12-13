@@ -6,6 +6,14 @@ gem install activesupport
 gem install hpricot 
 gem install sinatra         
 
-Make sure hpricot is at least at version 0.8.3
+Make sure hpricot is at least at version 0.8.3         
 
-To run just type ruby main.rb and go to http://localhost:4567/upload 
+-Instructions:
+
+Put the crossdomain.xml file in the root of your s3 bucket and make it readable.
+
+Modify the bucket, access_key, and secret_access_key to match your AWS credentials.
+
+$ruby main.rb 
+
+and then go to http://localhost:4567/upload 
